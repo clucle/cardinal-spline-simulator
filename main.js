@@ -34,17 +34,31 @@ function AddPoint(x, y) {
         return;
 
     pointArray.push(new Point(x, y));
+
+    let cardinalSpline = new CardinalSpline()
+    cardinalSpline.updatePointArray(pointArray);
 }
 
 function DeletePoint(x, y) {
     pointArray.some(function(point, idx) {
         if (point.checkClose(mousePoint)) {
             pointArray.splice(idx, 1);
+
+            let cardinalSpline = new CardinalSpline()
+            cardinalSpline.updatePointArray(pointArray);
+
             return true;
         }
 
         return false;
     });
+}
+
+function MovePoint(point, x, y) {
+    point.set(x, y);
+
+    let cardinalSpline = new CardinalSpline()
+    cardinalSpline.updatePointArray(pointArray);
 }
 
 init();

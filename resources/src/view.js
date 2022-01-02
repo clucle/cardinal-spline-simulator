@@ -66,7 +66,7 @@ function mouseMoveListener(event) {
             });
 
             if (dragging && draggingPoint !== undefined && !isCloseFromOtherPoints)
-                draggingPoint.set(mousePoint.x, mousePoint.y);
+                MovePoint(draggingPoint, mousePoint.x, mousePoint.y);
         } else {
             const isCloseFromPoints = pointArray.some(function(point) {
                 if (point.checkClose(mousePoint))
