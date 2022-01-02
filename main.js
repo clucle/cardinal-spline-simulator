@@ -1,16 +1,15 @@
-const c = document.getElementById("board");
-const ctx = c.getContext("2d");
-const width = 600;
-const height = 600;
-
-function updateBoard() {
-    const backgroundColor = "#ffffff";
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, width, height);
-}
-
 function init() {
-    updateBoard();
+    window.addEventListener("mousemove", function(event) {
+        mouseMoveListener(event);
+    }, false);
+
+    window.addEventListener("keyup", function(event) {
+        keyUpListener(event);
+    }, false);
+
+    setInterval(function() {
+        updateBoard();
+    }, 1000 / 32);
 }
 
 init();
