@@ -47,6 +47,22 @@ function mouseMoveListener(event) {
     var canvasBlank = canvas.getBoundingClientRect();
     mousePoint.x = (event.clientX - canvasBlank.left) * (canvas.width / canvasBlank.width);
     mousePoint.y = (event.clientY - canvasBlank.top) * (canvas.height / canvasBlank.height);
+
+    let cursor = '';
+
+    if (editState === 'edit-move') {
+        const isCloseFromPoints = pointArray.some(function(point) {
+            if (point.checkClose(mousePoint))
+                return true;
+
+            return false;
+        });
+
+        if (isCloseFromPoints)
+            cursor = 'pointer';
+    }
+
+    canvas.style.cursor = cursor;
 }
 
 function mouseDownListener(event) {
@@ -74,14 +90,14 @@ function drawPoint() {
 
 function drawCursor() {
     if (editState === 'edit-add') {
-        const isCloseFromOtherPoint = pointArray.some(function(point) {
+        const isCloseFromPoints = pointArray.some(function(point) {
             if (point.checkClose(mousePoint))
                 return true;
 
             return false;
         });
 
-        if (isCloseFromOtherPoint)
+        if (isCloseFromPoints)
             return;
 
         ctx.globalAlpha = 0.8;
