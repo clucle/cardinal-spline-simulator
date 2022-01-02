@@ -52,6 +52,8 @@ function mouseMoveListener(event) {
 function mouseDownListener(event) {
     if (editState === 'edit-add') {
         AddPoint(mousePoint.x, mousePoint.y);
+    } else if (editState === 'edit-delete') {
+        DeletePoint(mousePoint.x, mousePoint.y);
     }
 }
 
@@ -85,5 +87,13 @@ function drawCursor() {
         ctx.globalAlpha = 0.8;
         mousePoint.draw(ctx);
         ctx.globalAlpha = 1;
+    } else if (editState === 'edit-delete') {
+        pointArray.some(function(point) {
+            if (point.checkClose(mousePoint)) {
+                point.draw(ctx, '#ff2400');
+                return true;
+            }
+            return false;
+        });
     }
 }

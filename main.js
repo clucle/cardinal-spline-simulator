@@ -32,4 +32,15 @@ function AddPoint(x, y) {
     pointArray.push(new Point(x, y));
 }
 
+function DeletePoint(x, y) {
+    pointArray.some(function(point, idx) {
+        if (point.checkClose(mousePoint)) {
+            pointArray.splice(idx, 1);
+            return true;
+        }
+
+        return false;
+    });
+}
+
 init();
