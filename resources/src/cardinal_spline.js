@@ -1,5 +1,5 @@
 let CARDINAL_SPLINE_INSTANCE = null;
-const TIME_EXPAND_COUNT = 10000;
+const TIME_EXPAND_COUNT = 100;
 const TENSION = 0.5;
 const h00 = [];
 const h10 = [];
@@ -11,6 +11,7 @@ class CardinalSpline {
         if (CARDINAL_SPLINE_INSTANCE) return CARDINAL_SPLINE_INSTANCE;
 
         this.pointArray = [];
+        this.updated = false;
 
         for (let idx = 0; idx <= TIME_EXPAND_COUNT; idx++) {
             const t = idx / TIME_EXPAND_COUNT;
@@ -28,6 +29,7 @@ class CardinalSpline {
     updatePointArray(pointArray) {
         this.pointArray = pointArray;
         this.tangentPointArray = [];
+        this.updated = false;
 
         if (this.pointArray.length < 2)
             return;
@@ -49,9 +51,12 @@ class CardinalSpline {
         }
     }
 
-    draw(ctx) {
+    updateDrawPointArray() {
         if (this.pointArray.length < 2)
             return;
+
+        this.drawPointArray = [];
+
         for (let k = 0; k < this.pointArray.length - 1; ++k) {
             const pk = this.pointArray[k];
             const mk = this.tangentPointArray[k];
@@ -59,6 +64,8 @@ class CardinalSpline {
             const mk_1 = this.tangentPointArray[k + 1];
 
             let prevPoint = this.pointArray[k];
+            this.drawPointArray.push(prevPoint);
+
             for (let idx = 1; idx <= TIME_EXPAND_COUNT; idx++) {
                 const t = idx / TIME_EXPAND_COUNT;
                 const x = h00[idx] * pk.x + h10[idx] * mk.x + h01[idx] * pk_1.x + h11[idx] * mk_1.x;
@@ -72,7 +79,25 @@ class CardinalSpline {
                 ctx.stroke();
 
                 prevPoint = curPoint;
+                this.drawPointArray.push(curPoint);
             }
+        }
+
+        this.updated = true;
+    }
+
+    draw(ctx) {
+        if (this.pointArray.length < 2)
+            return;
+
+        if (this.updated === false)
+            this.updateDrawPointArray();
+
+        for (let idx = 0; idx < this.drawPointArray.length - 1; ++idx) {
+            ctx.beginPath();
+            ctx.moveTo(this.drawPointArray[idx].x, this.drawPointArray[idx].y);
+            ctx.lineTo(this.drawPointArray[idx + 1].x, this.drawPointArray[idx + 1].y);
+            ctx.stroke();
         }
     }
 }
