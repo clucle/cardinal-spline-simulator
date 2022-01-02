@@ -118,6 +118,7 @@ function updateBoard() {
 
     drawPoint();
     drawCursor();
+    drawCardinalSplinePath();
 }
 
 function drawPoint() {
@@ -150,4 +151,9 @@ function drawCursor() {
             return false;
         });
     }
+}
+
+function drawCardinalSplinePath() {
+    const cardinalSpline = new CardinalSpline();
+    cardinalSpline.draw(ctx);
 }
