@@ -4,8 +4,7 @@ const width = 600;
 const height = 600;
 
 let editState = "edit-none";
-let mouseX = 0;
-let mouseY = 0;
+let mousePoint = new Point(0, 0);
 
 function onChangeEditState(state) {
     if (state !== 'edit-add' && state !== 'edit-delete' && state !== 'edit-move' && state !== 'edit-none')
@@ -46,8 +45,14 @@ function keyUpListener(event) {
 
 function mouseMoveListener(event) {
     var canvasBlank = canvas.getBoundingClientRect();
-    mouseX = (event.clientX - canvasBlank.left) * (canvas.width / canvasBlank.width);
-    mouseY = (event.clientY - canvasBlank.top) * (canvas.height / canvasBlank.height);
+    mousePoint.x = (event.clientX - canvasBlank.left) * (canvas.width / canvasBlank.width);
+    mousePoint.y = (event.clientY - canvasBlank.top) * (canvas.height / canvasBlank.height);
+}
+
+function mouseDownListener(event) {
+    if (editState === 'edit-add') {
+        AddPoint(mousePoint.x, mousePoint.y);
+    }
 }
 
 function updateBoard() {
@@ -55,22 +60,30 @@ function updateBoard() {
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
 
+    drawPoint();
     drawCursor();
+}
+
+function drawPoint() {
+    pointArray.forEach(function(point) {
+        point.draw(ctx);
+    });
 }
 
 function drawCursor() {
     if (editState === 'edit-add') {
-        const radius = 12;
+        const isCloseFromOtherPoint = pointArray.some(function(point) {
+            if (point.checkClose(mousePoint))
+                return true;
 
-        ctx.beginPath();
+            return false;
+        });
+
+        if (isCloseFromOtherPoint)
+            return;
+
         ctx.globalAlpha = 0.8;
-
-        ctx.strokeStyle = "#000000";
-        ctx.fillStyle = "#000000";
-
-        ctx.arc(mouseX, +mouseY, radius, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.stroke();
+        mousePoint.draw(ctx);
         ctx.globalAlpha = 1;
     }
 }
