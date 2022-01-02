@@ -5,6 +5,7 @@ const height = 600;
 
 let editState = "edit-none";
 let mousePoint = new Point(0, 0);
+let dragging = true;
 
 function onChangeEditState(state) {
     if (state !== 'edit-add' && state !== 'edit-delete' && state !== 'edit-move' && state !== 'edit-none')
@@ -51,25 +52,62 @@ function mouseMoveListener(event) {
     let cursor = '';
 
     if (editState === 'edit-move') {
-        const isCloseFromPoints = pointArray.some(function(point) {
-            if (point.checkClose(mousePoint))
-                return true;
-
-            return false;
-        });
-
-        if (isCloseFromPoints)
+        if (dragging) {
             cursor = 'pointer';
+
+            const isCloseFromOtherPoints = pointArray.some(function(point) {
+                if (point === draggingPoint)
+                    return false;
+
+                if (point.checkClose(mousePoint))
+                    return true;
+
+                return false;
+            });
+
+            if (dragging && draggingPoint !== undefined && !isCloseFromOtherPoints)
+                draggingPoint.set(mousePoint.x, mousePoint.y);
+        } else {
+            const isCloseFromPoints = pointArray.some(function(point) {
+                if (point.checkClose(mousePoint))
+                    return true;
+
+                return false;
+            });
+
+            if (isCloseFromPoints)
+                cursor = 'pointer';
+        }
     }
 
     canvas.style.cursor = cursor;
 }
 
-function mouseDownListener(event) {
+function mouseUpListener(event) {
     if (editState === 'edit-add') {
         AddPoint(mousePoint.x, mousePoint.y);
     } else if (editState === 'edit-delete') {
         DeletePoint(mousePoint.x, mousePoint.y);
+    }
+
+    dragging = false;
+    draggingPoint = null;
+}
+
+function mouseDownListener(event) {
+    dragging = false;
+    draggingPoint = null;
+
+    if (editState === 'edit-move') {
+        pointArray.some(function(point) {
+            if (point.checkClose(mousePoint)) {
+                dragging = true;
+                draggingPoint = point;
+                return true;
+            }
+
+            return false;
+        });
     }
 }
 

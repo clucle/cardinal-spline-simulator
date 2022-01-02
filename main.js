@@ -3,6 +3,10 @@ function init() {
         mouseMoveListener(event);
     }, false);
 
+    canvas.addEventListener('mouseup', function(event) {
+        mouseUpListener(event);
+    }, false);
+
     canvas.addEventListener('mousedown', function(event) {
         mouseDownListener(event);
     }, false);

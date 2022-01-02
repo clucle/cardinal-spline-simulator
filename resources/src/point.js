@@ -10,6 +10,11 @@ class Point {
         return RADIUS;
     }
 
+    set(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
     checkClose(point) {
         const squareLength = (this.x - point.x) * (this.x - point.x) + (this.y - point.y) * (this.y - point.y);
         return Math.sqrt(squareLength) < Point.radius * 2;
