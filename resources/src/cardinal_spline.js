@@ -12,6 +12,7 @@ class CardinalSpline {
 
         this.pointArray = [];
         this.updated = false;
+        this.tension = 0.5;
 
         for (let idx = 0; idx <= TIME_EXPAND_COUNT; idx++) {
             const t = idx / TIME_EXPAND_COUNT;
@@ -24,13 +25,29 @@ class CardinalSpline {
         CARDINAL_SPLINE_INSTANCE = this;
     }
 
-    static get tension() { return TENSION; }
+    setTension(tension) {
+        tension *= 1;
+        if (typeof tension !== 'number') {
+            return;
+        }
+
+        if (tension < 0)
+            tension = 0;
+
+        if (tension > 1)
+            tension = 1;
+
+        this.tension = tension;
+        this.updated = false;
+    }
 
     updatePointArray(pointArray) {
         this.pointArray = pointArray;
-        this.tangentPointArray = [];
         this.updated = false;
+    }
 
+    updateTangentPointArray() {
+        this.tangentPointArray = [];
         if (this.pointArray.length < 2)
             return;
 
@@ -47,7 +64,7 @@ class CardinalSpline {
                 xDiff = this.pointArray[k + 1].x - this.pointArray[k - 1].x;
                 yDiff = this.pointArray[k + 1].y - this.pointArray[k - 1].y;
             }
-            this.tangentPointArray.push(new Point(xDiff, (1 - CardinalSpline.tension) * yDiff));
+            this.tangentPointArray.push(new Point(xDiff, (1 - this.tension) * yDiff));
         }
     }
 
@@ -82,16 +99,18 @@ class CardinalSpline {
                 this.drawPointArray.push(curPoint);
             }
         }
-
-        this.updated = true;
     }
 
     draw(ctx) {
         if (this.pointArray.length < 2)
             return;
 
-        if (this.updated === false)
+        if (this.updated === false) {
+            this.updateTangentPointArray();
             this.updateDrawPointArray();
+
+            this.updated = true;
+        }
 
         for (let idx = 0; idx < this.drawPointArray.length - 1; ++idx) {
             ctx.beginPath();

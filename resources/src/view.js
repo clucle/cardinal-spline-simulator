@@ -1,4 +1,6 @@
 const canvas = document.getElementById("board");
+const tensionSlider = document.getElementById("tension-slider");
+const tensionValue = document.getElementById("tension-value");
 const ctx = canvas.getContext("2d");
 const width = 600;
 const height = 600;

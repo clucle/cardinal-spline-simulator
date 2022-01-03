@@ -15,6 +15,13 @@ function init() {
         keyUpListener(event);
     }, false);
 
+    tensionSlider.oninput = function() {
+        let cardinalSpline = new CardinalSpline();
+        cardinalSpline.setTension(this.value);
+
+        tensionValue.innerHTML = this.value;
+    }
+
     setInterval(function() {
         updateBoard();
     }, 1000 / 32);
