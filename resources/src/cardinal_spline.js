@@ -64,7 +64,7 @@ class CardinalSpline {
                 xDiff = this.pointArray[k + 1].x - this.pointArray[k - 1].x;
                 yDiff = this.pointArray[k + 1].y - this.pointArray[k - 1].y;
             }
-            this.tangentPointArray.push(new Point(xDiff, (1 - this.tension) * yDiff));
+            this.tangentPointArray.push(new Point((1 - this.tension) * xDiff, (1 - this.tension) * yDiff));
         }
     }
 
